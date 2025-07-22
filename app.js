@@ -54,7 +54,7 @@ app.use(cors())
 app.use(`/api/${Config.ApiVersion}/user`, limiter, User)
 
 // Deploy Swagger
-app.use(`/api/${Config.ApiVersion}`, limiter, Docs)
+app.use(`/api/${Config.ApiVersion}`, Docs)
 
 // GET Status Of API Started or Not
 app.get(`/api/${Config.ApiVersion}/status`, (req, res) => {
