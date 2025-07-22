@@ -20,9 +20,9 @@ with:
 
 registry: ghcr.io
 
-username: ${{ github.actor }}
+username: BiG-ADLER
 
-password: ${{ secrets.GITHUB_TOKEN }}
+password: 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
 
 - name: Build the otp-usermanagement-api Docker image
 
