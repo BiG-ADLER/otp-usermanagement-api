@@ -3,6 +3,10 @@ name: publish
 on:
   push:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   publish-otp-usermanagement-api-image:
     runs-on: ubuntu-latest
