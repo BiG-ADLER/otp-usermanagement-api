@@ -1,35 +1,31 @@
 name: publish
 
-on: [push]
+on:
+  push:
 
 jobs:
+  publish-otp-usermanagement-api-image:
+    runs-on: ubuntu-latest
 
-publish-otp-usermanagement-api-image:
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
 
-runs-on: ubuntu-latest
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-steps:
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/big-adler/otp-usermanagement-api:latest .
 
-- uses: actions/checkout@v2
+      - name: Run the image (for test only)
+        run: |
+          docker run --rm ghcr.io/big-adler/otp-usermanagement-api:latest
 
-- name: Login to GitHub Container Registry
-
-uses: docker/login-action@v1
-
-with:
-
-registry: ghcr.io
-
-username: BiG-ADLER
-
-password: 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
-
-- name: Build the otp-usermanagement-api Docker image
-
-run: |
-
-       docker build . --tag ghcr.io/BiG-ADLER/otp-usermanagement-api:latest
-
-       docker run ghcr.io/BiG-ADLER/otp-usermanagement-api:latest
-
-       docker push ghcr.io/BiG-ADLER/otp-usermanagement-api:latest
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/big-adler/otp-usermanagement-api:latest
