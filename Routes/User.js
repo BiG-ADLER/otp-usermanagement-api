@@ -1,6 +1,5 @@
 // Import Packages
 import express from "express";
-import Throttle from "express-throttle/lib/throttle.js";
 
 // Import Package Classes
 const Router = express.Router();
@@ -11,7 +10,7 @@ import Database from "../Classes/Database/Database.js";
 const Data = new Database();
 
 // POST user data and Generate OTP Code and return JSON obejct that include OTP Code and user token and verify URL.
-Router.post('/create', Throttle({ "rate": "10/min" }), async (req, res, next) => {
+Router.post('/create', async (req, res, next) => {
     const {FirstName, LastName, PhoneNumber, Email} = req.body
 
     if ((typeof FirstName && typeof LastName && typeof PhoneNumber && typeof Email) == "string") {
@@ -68,7 +67,7 @@ Router.post('/create', Throttle({ "rate": "10/min" }), async (req, res, next) =>
 })
 
 // POST verify user data with email, phone number, and OTP code , then save user data in JWT token into database and delete temp OTP code in database 
-Router.post('/verify', Throttle({ "rate": "10/min" }), async (req, res, next) => {
+Router.post('/verify', async (req, res, next) => {
     const {phone, email, token, code} = req.query
 
     await Data.VerifyOTP({

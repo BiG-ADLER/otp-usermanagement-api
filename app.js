@@ -3,7 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv"; config();
 import cors from "cors"
-import { serve, setup } from "swagger-ui-express";
+import { rateLimit } from 'express-rate-limit'
 
 // Import Modules
 import Listen from "./Modules/Listen.js";
@@ -18,6 +18,16 @@ import CrashHandler from "./Handlers/CrashHandler.js";
 // Import Routes
 import User from "./Routes/User.js"
 import Docs from "./Routes/Docs.js"
+
+// Configure rate limit
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 1 minutes
+	limit: 2, // Limit each IP to 2 requests per `window` (here, per 1 minutes).
+	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+    message: {
+        Data: "شما فقط 2 بار در 1 دقیقه میتوانید کد تایید دریافت کنید."
+    }
+})
 
 // Port Setting
 const Port = Config.Port || 3001 || 3002
@@ -39,6 +49,9 @@ app.use(cookieParser())
 
 // Using CORS Headers
 app.use(cors())
+
+// Using Rate Limit
+app.use(limiter)
 
 // Deploy Api Routes
 app.use(`/api/${Config.ApiVersion}/user`, User)
