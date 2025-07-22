@@ -22,9 +22,12 @@ jobs:
         run: |
           docker build -t ghcr.io/big-adler/otp-usermanagement-api:latest .
 
-      - name: Run the image (for test only)
+      - name: Run container in background
         run: |
-          docker run --rm ghcr.io/big-adler/otp-usermanagement-api:latest
+          docker run -d --name otp-usermanagement-api-test -p 3000:3000 ghcr.io/big-adler/otp-usermanagement-api:latest
+          sleep 5
+          curl -f http://localhost:3000/api/v1/status || (docker logs otp-test && false)
+          docker stop otp-usermanagement-api-test
 
       - name: Push Docker image
         run: |
