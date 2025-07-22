@@ -21,8 +21,8 @@ import Docs from "./Routes/Docs.js"
 
 // Configure rate limit
 const limiter = rateLimit({
-	windowMs: 1 * 60 * 1000, // 1 minutes
-	limit: 2, // Limit each IP to 2 requests per `window` (here, per 1 minutes).
+	windowMs: 5 * 60 * 1000, // 1 minutes
+	limit: 10, // Limit each IP to 2 requests per `window` (here, per 1 minutes).
 	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
     message: {
         Data: "شما فقط 2 بار در 1 دقیقه میتوانید کد تایید دریافت کنید."
@@ -50,14 +50,11 @@ app.use(cookieParser())
 // Using CORS Headers
 app.use(cors())
 
-// Using Rate Limit
-app.use(limiter)
-
 // Deploy Api Routes
-app.use(`/api/${Config.ApiVersion}/user`, User)
+app.use(`/api/${Config.ApiVersion}/user`, limiter, User)
 
 // Deploy Swagger
-app.use(`/api/${Config.ApiVersion}`, Docs)
+app.use(`/api/${Config.ApiVersion}`, limiter, Docs)
 
 // GET Status Of API Started or Not
 app.get(`/api/${Config.ApiVersion}/status`, (req, res) => {
